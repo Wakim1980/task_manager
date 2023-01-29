@@ -21,11 +21,11 @@ class Repository:
         return task
 
     def update(self, task: Task)-> bool:
-        self._cursor.execute(f"update tasks set name={task.name}, priority={task.priority}, description={task.description}, execution_date={task.execution_date} where id={task.id}")
+        self._cursor.execute(f"update tasks set name='{task.name}', priority={task.priority}, description='{task.description}', execution_date='{task.execution_date}' where id={task.id}")
         self._mydb.commit()
         return self._cursor.rowcount > 0
 
-    def remove(self, id: int)-> bool:
+    def remove(self, id: int) -> bool:
         self._cursor.execute(f"delete from tasks where id={id}")
         self._mydb.commit()
         return self._cursor.rowcount > 0
@@ -43,8 +43,26 @@ class Repository:
         temp = self._cursor.fetchall()
         return [Task(*i) for i in temp]
 
-    def find_by_text(self,text: str) -> list[Task]:
-        # (CUST_CITY like '%York%' and CUST_CITY like '%New%') or (WORKING_ARE like '%York%' and WORKING_AREA like '%New%')
+    def find_by_text(self, text: str):
+        t = text.split(" ")
+        col = ["name", "description"]
+        filter = ""
+        for j, x in enumerate(col):
+            for i, y in enumerate(t):
+                filter = filter + f"{x} like '%{y}%' "
+                if i < len(t) - 1:
+                    filter = filter + "and "
+            if j < len(col) - 1:
+                filter = filter + ") or ("
+        self._cursor.execute(f"select * from tasks where ({filter})")
+        result = self._cursor.fetchall()
+        return [Task(*i) for i in result]
+
+    def completed_task(self, id: int)-> bool:
+        task = self.find_by_id(id)
+        self._cursor.execute(f"update task set task_completed = {task.task_completed} where id ={task.id}")
+
+
 
 
 
