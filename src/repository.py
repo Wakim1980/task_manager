@@ -36,6 +36,8 @@ class Repository:
     def find_by_id(self, id: int) -> Task:
         self._cursor.execute(f"select * from tasks where id={id}")
         temp = self._cursor.fetchone()
+        if temp is None:
+            return None
         return Task(*temp)
 
     def get_all(self) -> list[Task]:
@@ -58,10 +60,10 @@ class Repository:
         result = self._cursor.fetchall()
         return [Task(*i) for i in result]
 
-    def completed_task(self, id: int)-> bool:
+    def completed_task(self, id: int):
         task = self.find_by_id(id)
-        self._cursor.execute(f"update task set task_completed = {task.task_completed} where id ={task.id}")
-
+        self._cursor.execute(f"update tasks set task_completed = 1 where id ={task.id}")
+        self._mydb.commit()
 
 
 
