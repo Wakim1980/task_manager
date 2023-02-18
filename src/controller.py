@@ -2,14 +2,14 @@ import os
 from datetime import datetime
 
 from src.menu import Menu
-from src.repository import Repository
+from src.taskrepository import TaskRepository
 from src.task import Task
 
 
 class Controller:
     def __init__(self):
         self._flag = True
-        self._repository: Repository = Repository()
+        self._repository: TaskRepository = TaskRepository()
 
     def run(self):
         menu = Menu()

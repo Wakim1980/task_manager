@@ -2,13 +2,13 @@ from datetime import datetime
 
 from _pytest.fixtures import fixture
 
-from src.repository import Repository
+from src.taskrepository import TaskRepository
 from src.task import Task
 
 
 @fixture
 def repository():
-    repository = Repository()
+    repository = TaskRepository()
     return repository
 
 
